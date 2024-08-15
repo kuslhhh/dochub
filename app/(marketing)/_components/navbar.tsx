@@ -14,7 +14,7 @@ export const Navbar = () => {
             scrolled && "border-b shadow-sm",
         )}> 
             <Logo />
-            <div className="md:ml-auto md:justify-end md:justify-between w-full flex items-center gap-x-2">
+            <div className="md:ml-auto flex items-center gap-x-4">
                 <ModeToggle />
             </div>
         </div>
