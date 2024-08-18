@@ -1,9 +1,13 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon, ChevronRightIcon, LucideIcon } from "lucide-react";
+import { useMutation } from "convex/react";
+import { ChevronDownIcon, ChevronRightIcon, LucideIcon, Plus } from "lucide-react";
+import { useRouter } from "next/router";
+import React from "react";
 
 interface ItemProps{
     id?: Id<"documents">;
@@ -33,8 +37,31 @@ export const Item = ({
     level = 0,
 
 }: ItemProps) => {
-    const ChevronIcon = expanded ? ChevronDownIcon : ChevronRightIcon;
 
+    const router = useRouter();
+    const create = useMutation(api.documents.create);
+
+    const handleExpand = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        event.stopPropagation()
+        onexpand?.();
+    }
+
+    const onCreate = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        if(!id) return;
+        const promise = create({
+            title:"Untitled", parentDocument: id
+        })
+        .then((documentId) => {
+            onexpand?.();
+        })
+
+    }
+
+    const ChevronIcon = expanded ? ChevronDownIcon : ChevronRightIcon;
 
     return(
         <div
@@ -51,7 +78,7 @@ export const Item = ({
                 <div 
                     role="button"
                     className="h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-2"
-                    onClick={() => {}}
+                    onClick={handleExpand}
                 > 
                     <ChevronIcon 
                         className="h-4 w-4 shrink-0 text-muted-foreground/50"
@@ -72,6 +99,16 @@ export const Item = ({
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                     <span className="text-xs">Ctrl</span>k
                 </kbd>
+            )}
+
+            {!!id &&(
+                <div className="ml-auto flex items-center gap-x-2">
+                    <div
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+                    >
+                        <Plus className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                </div>
             )}
         </div>
     )
