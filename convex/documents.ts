@@ -2,8 +2,12 @@ import { v } from "convex/values";
 
 import{ mutation, query} from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
+import { error } from "console";
 
-export const get = query({
+export const getSidebar = query({
+    args: {
+        parentDocument: v.optional(v.id("documents"))
+    },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
 
@@ -11,11 +15,24 @@ export const get = query({
             throw new Error("Not authenticated");
         }
 
-        const documents = await ctx.db.query("documents").collect();
+        const userId = identity.subject;
+        const documents = await ctx.db
+            .query("documents")
+            .withIndex("by_user_parent", (q) =>
+                q
+                    .eq("userId", userId)
+                    .eq("parentDocument", args.parentDocument)
+            )
+            .filter((q) => 
+                q.eq(q.field("isArchieved"), false)
+            )
+
+            .order("desc")
+            .collect();
 
         return documents;
-    }
-})
+    },
+});
 
 export const create = mutation({
     args: {
