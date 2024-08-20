@@ -5,8 +5,8 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
 import { ChevronDownIcon, ChevronRightIcon, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react";
-import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "sonner";
 import { DropdownMenu,
@@ -27,7 +27,7 @@ interface ItemProps {
     onexpand?: () => void;
 
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
     icon: LucideIcon;
 }
 
@@ -46,7 +46,7 @@ export const Item = ({
 
 
     const { user } = useUser();
-    // const router = useRouter();
+    const router = useRouter();
     const create = useMutation(api.documents.create);
     const archive = useMutation(api.documents.archive);
 
