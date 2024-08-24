@@ -6,7 +6,7 @@ import { useConvexAuth } from "convex/react";
 import { redirect, useRouter } from "next/navigation";
 import { Main } from "next/document";
 import { Navigation } from "./_components/navigation";
-import { SearchCommand } from "@/components/ui/search-command";
+import { SearchCommand } from "@/components/search-command";
 
 const MainLayout = ({
     children
