@@ -1,1 +1,1 @@
-# DocHub - Notes and Documents
+# Introducing docHub
