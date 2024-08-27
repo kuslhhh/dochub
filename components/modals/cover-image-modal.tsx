@@ -4,6 +4,7 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
+    DialogTitle 
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useParams } from "next/navigation";
@@ -12,10 +13,8 @@ import { useMutation } from "convex/react";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { SingleImageDropzone } from "@/components/single-image-dropzone";
 import { useEdgeStore } from "@/lib/edgestore";
-import { set } from "zod";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { Replace } from "lucide-react";
 
 export const CoverImageModal = () => {
     const params = useParams();
@@ -23,8 +22,8 @@ export const CoverImageModal = () => {
     const coverImage = useCoverImage();
     const update = useMutation(api.documents.update);
 
-    const [ file, setFile ] = useState<File>()
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const [file, setFile] = useState<File>();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
 
     const onClose = () => {
@@ -34,32 +33,36 @@ export const CoverImageModal = () => {
     }
 
     const onChange = async (file?: File) => {
-        if(file){
+        if (file) {
             setIsSubmitting(true);
             setFile(file);
 
-            const res = await edgestore.publicFiles.upload({
-                file,
-                options: {
-                    replaceTargetUrl: coverImage.url
-                }
-            }); 
+            try {
+                const res = await edgestore.publicFiles.upload({
+                    file,
+                    options: {
+                        replaceTargetUrl: coverImage.url
+                    }
+                }); 
 
-            await update({
-                id: params.documentId as Id<"documents">,
-                coverImage: res.url
-            })
-             
+                await update({
+                    id: params.documentId as Id<"documents">,
+                    coverImage: res.url
+                });
+
+                onClose();
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                setIsSubmitting(false);
+            }
         }
     }
 
     return (
         <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
-            <DialogContent>
+            <DialogContent aria-describedby="cover-image-modal-description">
                 <DialogHeader>
-                    <h2>
-                        Cover Image
-                    </h2>
+                    <DialogTitle>Cover Image</DialogTitle> {}
                 </DialogHeader>
                 <SingleImageDropzone
                     className="w-full outline-none"

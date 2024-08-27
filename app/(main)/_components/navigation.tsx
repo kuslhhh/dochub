@@ -23,8 +23,10 @@ import { Navbar } from "./navbar";
 import { query } from "@/convex/_generated/server";
 import { v } from "convex/values";
 import { error } from "console";
+import { useRouter } from "next/navigation";
 
 export const Navigation = () => {
+    const router = useRouter();
     const settings  = useSettings();
     const search = useSearch();
     const params = useParams();
@@ -124,7 +126,8 @@ export const Navigation = () => {
     const handleCreate = () => {
         const promise = create({
             title: "Untitled",
-        });
+        })
+        .then((documentId) => router.push(`/documents/${documentId}`));
 
         toast.promise(promise, {
             loading: "Creating your doc...",
