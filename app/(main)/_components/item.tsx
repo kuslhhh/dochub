@@ -55,7 +55,8 @@ export const Item = ({
     ) => {
         event.stopPropagation();
         if (!id) return;
-        const promise = archive({id});
+        const promise = archive({id})
+        .then(() => router.push("/documents"));
 
         toast.promise(promise, {
             loading: "Archiving your doc...",
@@ -71,7 +72,7 @@ export const Item = ({
         onexpand?.();
     };
 
-    const onCreate = async (
+    const onCreate = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
         event.stopPropagation();
@@ -80,7 +81,8 @@ export const Item = ({
             title: "Untitled", parentDocument: id
         })
             .then((documentId) => {
-                onexpand?.();
+                if(!expanded){
+            }
                 router.push(`/documents/${documentId}`);
             });
 
@@ -119,7 +121,7 @@ export const Item = ({
                     {documentIcon}
                 </div>
             ) : (
-                <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+                <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
             )}
             <span className="truncate">
                 {label}
