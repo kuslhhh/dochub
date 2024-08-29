@@ -1,3 +1,5 @@
+// components/SingleImageDropzone.tsx
+
 'use client';
 
 import { formatFileSize } from '@edgestore/react/utils';
@@ -24,6 +26,7 @@ export interface SingleImageDropzoneProps extends DropzoneOptions {
   onDelete?: () => void;
   value?: File | string | null;
   className?: string;
+  onChange?: (file?: File) => void; // Added onChange prop
 }
 
 export const SingleImageDropzone = ({
@@ -31,6 +34,7 @@ export const SingleImageDropzone = ({
   onDelete,
   value,
   className,
+  onChange, // Destructure onChange
   ...rest
 }: SingleImageDropzoneProps) => {
   const [file, setFile] = React.useState<File | string | null>(value ?? null);
@@ -42,13 +46,15 @@ export const SingleImageDropzone = ({
     (acceptedFiles, rejectedFiles, event) => {
       if (isLoading) return;
 
-      setFile(acceptedFiles[0]);
+      const newFile = acceptedFiles[0];
+      setFile(newFile);
+      onChange?.(newFile); // Call onChange with the new file
       if (rejectedFiles.length > 0) {
         setFileRejection(rejectedFiles[0].errors[0].message);
         setTimeout(() => setFileRejection(undefined), 5000);
       }
     },
-    [isLoading]
+    [isLoading, onChange]
   );
 
   const handleDelete = React.useCallback(() => {
