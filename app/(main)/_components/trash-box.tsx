@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 export const TrashBox = () => {
-
     const router = useRouter();
     const params = useParams();
     const documents = useQuery(api.documents.getTrash);
@@ -30,7 +29,7 @@ export const TrashBox = () => {
     };
 
     const onRestore = (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         documentId: Id<"documents">,
     ) => {
         event.stopPropagation();
@@ -46,7 +45,6 @@ export const TrashBox = () => {
     const onRemove = (
         documentId: Id<"documents">,
     ) => {
-        
         const promise = remove({ id: documentId });
 
         toast.promise(promise, {
@@ -108,7 +106,6 @@ export const TrashBox = () => {
                                     <Trash className="h-4 w-4 text-muted-foreground" />
                                 </div>
                             </ConfirmModal>
-
                         </div>
                     </div>
                 ))}
