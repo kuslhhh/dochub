@@ -22,12 +22,11 @@ export const CoverImageModal = () => {
     const coverImage = useCoverImage();
     const update = useMutation(api.documents.update);
 
-    const [file, setFile] = useState<File>();
+    const [file, setFile] = useState<File | string | null>(null); // Use File | string | null
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
 
     const onClose = () => {
-        setFile(undefined);
+        setFile(null); // Use null instead of undefined
         setIsSubmitting(false);
         coverImage.onClose();
     }
@@ -62,7 +61,7 @@ export const CoverImageModal = () => {
         <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
             <DialogContent aria-describedby="cover-image-modal-description">
                 <DialogHeader>
-                    <DialogTitle>Cover Image</DialogTitle> {}
+                    <DialogTitle>Cover Image</DialogTitle>
                 </DialogHeader>
                 <SingleImageDropzone
                     className="w-full outline-none"

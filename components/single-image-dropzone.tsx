@@ -1,4 +1,4 @@
-// components/SingleImageDropzone.tsx
+
 
 'use client';
 
