@@ -2,8 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { ElementRef, useEffect, useRef, useState, useCallback } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { UserItem } from "./user-item";
 import { api } from "@/convex/_generated/api";
@@ -20,42 +20,21 @@ import { TrashBox } from "./trash-box";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
 import { Navbar } from "./navbar";
-import { query } from "@/convex/_generated/server";
-import { v } from "convex/values";
-import { error } from "console";
-import { useRouter } from "next/navigation";
 
 export const Navigation = () => {
     const router = useRouter();
-    const settings  = useSettings();
+    const settings = useSettings();
     const search = useSearch();
     const params = useParams();
     const pathname = usePathname();
     const isMobile = useMediaQuery("(max-width: 768px)");
     const create = useMutation(api.documents.create);
 
-
     const isResizingRef = useRef(false);
     const sidebarRef = useRef<ElementRef<"aside">>(null);
     const navbarRef = useRef<ElementRef<"div">>(null);
     const [isResetting, setIsResetting] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(isMobile);
-    
-    useEffect(() => {
-        if(isMobile){
-            collapse();
-        }else{
-            resetWidth();
-        }
-    }, [isMobile]);
-
-    useEffect(() => {
-        if(isMobile){
-            collapse();
-        }
-    }, [pathname, isMobile]);
-
-    
 
     const handleMouseDown = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -89,13 +68,14 @@ export const Navigation = () => {
         document.removeEventListener("mouseup", handleMouseUp);
     };
 
-    const resetWidth = () => {
-        if(sidebarRef.current && navbarRef.current){
+    // Memoized function using useCallback to avoid dependency issues
+    const resetWidth = useCallback(() => {
+        if (sidebarRef.current && navbarRef.current) {
             setIsCollapsed(false);
             setIsResetting(false);
 
             sidebarRef.current.style.width = isMobile ? "100%" : "240px";
-            navbarRef.current.style.setProperty (
+            navbarRef.current.style.setProperty(
                 "width",
                 isMobile ? "0" : "calc(100% - 240px)"
             );
@@ -105,23 +85,21 @@ export const Navigation = () => {
                 isMobile ? "100%" : "240px"
             );
             setTimeout(() => setIsResetting(false), 300);
-
         }
-    };
+    }, [isMobile]);
 
     const collapse = () => {
-        if (sidebarRef.current && navbarRef.current){
+        if (sidebarRef.current && navbarRef.current) {
             setIsCollapsed(true);
             setIsResetting(true);
 
-            sidebarRef.current.style.width = "0"
-            navbarRef.current.style.setProperty("width", "100%")
-            navbarRef.current.style.setProperty("left", "0")
+            sidebarRef.current.style.width = "0";
+            navbarRef.current.style.setProperty("width", "100%");
+            navbarRef.current.style.setProperty("left", "0");
 
             setTimeout(() => setIsResetting(false), 300);
-
         }
-    }
+    };
 
     const handleCreate = () => {
         const promise = create({
@@ -134,7 +112,21 @@ export const Navigation = () => {
             success: "Your doc has been created!",
             error: "Failed to create your doc.",
         });
-    }
+    };
+
+    useEffect(() => {
+        if (isMobile) {
+            collapse();
+        } else {
+            resetWidth();
+        }
+    }, [isMobile, resetWidth]);
+
+    useEffect(() => {
+        if (isMobile) {
+            collapse();
+        }
+    }, [pathname, isMobile]);
 
     return (
         <>
@@ -157,7 +149,7 @@ export const Navigation = () => {
                     <ChevronLeft className="h-6 w-6" />
                 </div>
                 <div>
-                    <UserItem/>
+                    <UserItem />
                     <Item
                         label="Search"
                         icon={Search}
@@ -170,9 +162,9 @@ export const Navigation = () => {
                         onClick={settings.onOpen}
                     />
                     <Item
-                        onClick = {handleCreate}
-                        label = "New page"
-                        icon = {PlusCircle}
+                        onClick={handleCreate}
+                        label="New page"
+                        icon={PlusCircle}
                     />
                 </div>
                 <div className="mt-4">
@@ -184,13 +176,13 @@ export const Navigation = () => {
                     />
                     <Popover>
                         <PopoverTrigger className="w-full mt-4">
-                            <Item label="Trash" icon={Trash}/>
+                            <Item label="Trash" icon={Trash} />
                         </PopoverTrigger>
                         <PopoverContent
                             className="p-0 w-72" 
                             side={isMobile ? "bottom" : "right"}
                         >
-                            <TrashBox/>                          
+                            <TrashBox />                          
                         </PopoverContent>
                     </Popover>
                 </div>
@@ -210,7 +202,7 @@ export const Navigation = () => {
                 {!!params.documentId ? (
                     <Navbar
                         isCollapsed={isCollapsed}
-                        onResetWidth = {resetWidth}
+                        onResetWidth={resetWidth}
                     />
                 ) : (
                 <nav className="bg-transparent px-3 py-2 w-full">
