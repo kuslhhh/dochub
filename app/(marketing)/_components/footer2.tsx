@@ -7,7 +7,7 @@ export const Footer2 = () => {
                 <Button variant="ghost" size="sm">
                     developed by
                     <a
-                        href="https://github.com/kuslhhh"
+                        href="https://dochub-livid.vercel.app/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-bold ml-1"
