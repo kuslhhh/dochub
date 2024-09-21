@@ -26,7 +26,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
         documentId: params.documentId,
     });
 
-    // Mutation for updating the document content
     const update = useMutation(api.documents.update);
 
     const onChange = (content: string) => {
@@ -36,7 +35,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
         });
     };
 
-    // Skeleton loading state
     if (document === undefined) {
         return (
             <div>
@@ -53,14 +51,12 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
         );
     }
 
-    // If document not found
     if (document === null) {
         return <div>Not found</div>;
     }
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Main content */}
             <div className="flex-grow pb-40">
                 <Cover url={document.coverImage} />
                 <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
@@ -68,8 +64,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                     <Editor onChange={onChange} initialContent={document.content} />
                 </div>
             </div>
-
-            {/* Footer stays at the bottom */}
             <Footer2 />
         </div>
     );
