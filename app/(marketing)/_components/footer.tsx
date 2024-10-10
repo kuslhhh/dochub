@@ -8,9 +8,9 @@ export const Footer = () => {
             <Logo/>
             <div className="md:ml-auto w-full justify-between md:justify-end flex items-center gap-x-2 test-muted-foreground">
             <Button variant="ghost" size="sm">
-                    developed by
+                    developed by                                                    
                     <a
-                        href="https://github.com/kuslhhh"
+                        href="https://kuslh.vercel.app"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-bold ml-1"
