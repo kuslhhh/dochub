@@ -23,6 +23,8 @@
   background: hsl(0, 0%, 12%);
 }
 
+/* custom css for scrollbar  */
+
 ::-moz-selection {
   /* Code for Firefox */
   color: #050c0f;
